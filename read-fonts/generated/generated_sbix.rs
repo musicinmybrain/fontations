@@ -662,6 +662,13 @@ impl Default for GlyphData<'_> {
     }
 }
 
+impl GlyphData<'_> {
+    /// Returns `true` if this table was created from default (null) data.
+    pub fn is_default(&self) -> bool {
+        self.data.as_bytes() == FontData::default_table_data().as_bytes()
+    }
+}
+
 #[cfg(feature = "experimental_traverse")]
 impl<'a> SomeTable<'a> for GlyphData<'a> {
     fn type_name(&self) -> &str {
