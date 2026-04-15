@@ -51,8 +51,15 @@ impl<'a> SubsetTable<'a> for ArrayOfOffsets<'a, Strike<'a>, Offset32> {
         let mut obj_idxes = Vec::with_capacity(orig_num);
         let mut offset_positions = Vec::with_capacity(orig_num);
 
-        for idx in 0..orig_num {
-            let idx = orig_num - 1 - idx;
+        for idx in (0..orig_num).rev() {
+            // TODO: remove null check once read-fonts supports returning an empty object
+            if self
+                .get_offset(idx)
+                .map_err(|_| SerializeErrorFlags::SERIALIZE_ERROR_READ_ERROR)?
+                .is_null()
+            {
+                continue;
+            }
             let t = self
                 .get(idx)
                 .map_err(|_| SerializeErrorFlags::SERIALIZE_ERROR_READ_ERROR)?;
